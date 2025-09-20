@@ -8,13 +8,14 @@ type WindowProps = {
   title?: string
   children: React.ReactNode
   className?: string
+  zindex?: string
 }
 
-export default function TutlaWindow({ open, onClose, title, children, className="" }: WindowProps) {
+export default function TutlaWindow({ open, onClose, title, children, className="", zindex="50" }: WindowProps) {
   if (!open) return null
   
   return (
-    <div className={`fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm ${className} `} >
+    <div className={`fixed inset-0 z-${zindex} flex items-center justify-center bg-black/40 backdrop-blur-sm ${className} `} >
       
       <LiquidGlass className={`w-[90%]`}>
         <button
