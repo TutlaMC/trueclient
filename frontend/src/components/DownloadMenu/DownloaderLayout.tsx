@@ -6,7 +6,11 @@ import { BookAudio, DownloadCloudIcon } from "lucide-react";
 import TutlaWindow from "../TutlaWindow";
 import MarkdownReader from "../MarkdownReader";
 
-export default function DownloaderLayout() {
+type DownloaderLayoutProps = {
+    config: any;
+}
+
+export default function DownloaderLayout({config: any}: DownloaderLayoutProps) {
   const lastSearch = useRef("");
   const [mods, setMods] = useState<any[]>([]);
   const [searchQuery, setName] = useState("");
@@ -20,8 +24,14 @@ export default function DownloaderLayout() {
   async function search(query: string) {
     try {
       const response = await fetch(
-        `https://api.modrinth.com/v2/search?query=${query}&limit=20`
+        `https://api.modrinth.com/v2/search?query=${query}&limit=20&facet=[[versions:1.19.4]]&project_type=mod`,
+        {
+          headers: {
+            'User-Agent': 'Mozilla/5.0'
+          }
+        }
       );
+
       const data = await response.json();
       setMods(data.hits || []);
     } catch (err) {

@@ -43,10 +43,9 @@ const default_conf =
   "fabric_installer": "1.0.1"
 }
 
-let config: any = JSON.parse(
+let client_config: any = JSON.parse(
   betterReadONG(CONF_FILE_NAME, JSON.stringify(default_conf, null, 2))
 );
-
 
 // now shi
 
@@ -87,21 +86,21 @@ app.on("activate", () => {
 
 const launcher = new Client();
 
-
 ipcMain.on("launch-minecraft", async (_event, playerName: string) => {
-  console.log(playerName)
+  console.log(playerName);
   mainWindow?.webContents.send("message", { text: "launching..." });
+
   try {
     const opts = {
       authorization: Authenticator.getAuth(playerName || "Player"),
       root: MINECRAFT_DIR,
       version: {
-        number: config.minecraft_version || default_conf.minecraft_version,
-        type:  config.type || default_conf.type,
+        number: client_config.minecraft_version || default_conf.minecraft_version,
+        type: client_config.type || default_conf.type,
       },
       fabric: {
-        loader:  config.fabric_loader ||  default_conf.fabric_loader,
-        installer: config.fabric_installer || default_conf.fabric_installer
+        loader: client_config.fabric_loader || default_conf.fabric_loader,
+        installer: client_config.fabric_installer || default_conf.fabric_installer
       },
       memory: { min: "2G", max: "4G" }
     };
@@ -111,19 +110,22 @@ ipcMain.on("launch-minecraft", async (_event, playerName: string) => {
     launcher.on("debug", (e) => console.log("[DEBUG]", e));
     launcher.on("data", (e) => console.log("[DATA]", e.toString()));
     launcher.on("progress", (e) => console.log("[PROGRESS]", e));
-    launcher.on("close", (code) => console.log(`Minecraft exited with code ${code}`));
-
   } catch (err) {
     console.error("Launch failed:", err);
   }
 });
 
-ipcMain.on("bconfig", async (config: any | null = null) => {
+ipcMain.on("stop-minecraft", () => {
+  
+});
+
+ipcMain.on("bconfig", async (_event, config: any | null = null) => {
   if (config){
     fs.writeFileSync(CONFIG_FILE, config);
   } else {
     config = betterReadONG(CONF_FILE_NAME)
   }
-  mainWindow?.webContents.send("config", { text: JSON.parse(config) });
+
+  mainWindow?.webContents.send("config", { config: config });
 });
 

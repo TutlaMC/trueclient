@@ -9,4 +9,5 @@ contextBridge.exposeInMainWorld("electronAPI", {
   onConfig: (callback: (data: any) => void) => {
     ipcRenderer.on("config", (_event, data) => callback(data));
   },
+  stopMinecraft: ()  => ipcRenderer.send("stop-minecraft")
 });

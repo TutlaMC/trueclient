@@ -15,6 +15,8 @@ const State = {
 type State = typeof State[keyof typeof State];
 
 export default function App() {
+  const [config, setConfig] = useState<any>({});
+
   const [status, setStatus] = useState<State>(State.IDLE);
   const [msg, setMsg] = useState("");
 
@@ -24,7 +26,13 @@ export default function App() {
     window.electronAPI.onMessage((data) => {
       setMsg(data.text);
     });
+    window.electronAPI.onConfig((data) => {
+      setConfig(JSON.parse(data.config));
+    });
+    window.electronAPI.bconfig();
   }, []);
+
+  console.log(config, "eeeeeeeeeeeeeeeeeeeeeeeeeeee\n\n\n")
 
   const launchGame = async () => {
     setStatus(State.LAUNCHING)
@@ -34,7 +42,7 @@ export default function App() {
 
   const stopGame = () => {
     setStatus(State.IDLE)
-    window.electronAPI.launchMinecraft("weeb")
+    window.electronAPI.stopMinecraft()
   }
 
 
@@ -87,7 +95,7 @@ export default function App() {
         </div>
       </div>
       <TutlaWindow open={open} onClose={() => setOpen(false)} title="Mod Downloader">
-          <DownloaderLayout>
+          <DownloaderLayout config={config}>
           </DownloaderLayout>
       </TutlaWindow>
 
