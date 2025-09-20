@@ -1,18 +1,17 @@
 {
   "name": "trueclient",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "A custom Minecraft launcher",
   "author": {
     "name": "TutlaMC",
     "email": "ayaanibrahim1110@gmail.com"
   },
   "homepage": "https://tutla.net",
-
   "main": "electron/dist/main.js",
   "type": "module",
   "scripts": {
     "build:electron": "tsc -p electron && tsc -p electron/tsconfig.preload.json",
-    "dev:electron": "npm run build:electron && NODE_ENV=dev electron ./electron/dist/main.js",
+    "dev:electron": "npm run build:electron && cross-env NODE_ENV=dev electron ./electron/dist/main.js",
     "dev:react": "cd frontend && npm run dev",
     "dev": "concurrently \"npm run dev:react\" \"npm run dev:electron\"",
     "build": "npm run build:react && npm run build:electron && electron-builder",
@@ -21,6 +20,7 @@
   "devDependencies": {
     "@types/node": "^20.19.11",
     "concurrently": "^8.0.0",
+    "cross-env": "^10.0.0",
     "electron": "^37.4.0",
     "electron-builder": "^26.0.12",
     "ts-node": "^10.9.2",
@@ -44,10 +44,13 @@
       "buildResources": "assets"
     },
     "linux": {
-      "target": ["AppImage", "deb"],
+      "target": [
+        "AppImage",
+        "deb"
+      ],
       "category": "Game",
       "maintainer": "TutlaMC ayaanibrahim1110@gmail.com",
-      "icon": "build/icons" 
+      "icon": "build/icons"
     },
     "win": {
       "target": "nsis",

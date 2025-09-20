@@ -1,7 +1,9 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import TargetCursor from "./components/TargetCursor"
 import Prism from './components/Background';
 import { Play, Settings, Download, StopCircle} from "lucide-react";
+import TutlaWindow from "./components/TutlaWindow";
+import DownloaderLayout from "./components/DownloadMenu/DownloaderLayout";
 
 const State = {
   IDLE: 0,
@@ -14,6 +16,15 @@ type State = typeof State[keyof typeof State];
 
 export default function App() {
   const [status, setStatus] = useState<State>(State.IDLE);
+  const [msg, setMsg] = useState("");
+
+  const [open, setOpen] = useState(false)
+
+  useEffect(() => {
+    window.electronAPI.onMessage((data) => {
+      setMsg(data.text);
+    });
+  }, []);
 
   const launchGame = async () => {
     setStatus(State.LAUNCHING)
@@ -52,9 +63,13 @@ export default function App() {
       <div className="w-screen relative flex items-center justify-center h-full text-white">
         <div className="w-full max-w-md p-6 rounded shadow-xl bg-black/50">
           <h1 className="text-3xl font-bold text-center mb-4 text-emerald-400">
-            TrueClient
+            TrueClient {msg}
           </h1>
           <div className="flex flex-row items-center justify-center gap-3">
+            
+            <button className="px-2 py-2 rounded-full bg-gray-700 hover:bg-gray-600 transition cursor-target">
+              <Settings></Settings>
+            </button>
             {
               status == State.IDLE ? 
               <button onClick={launchGame} className="px-2 py-2 rounded-full bg-emerald-500 hover:bg-emerald-250 transition cursor-target">
@@ -64,15 +79,19 @@ export default function App() {
                 <StopCircle></StopCircle>
               </button> 
             }
-            <button className="px-2 py-2 rounded-full bg-gray-700 hover:bg-gray-600 transition cursor-target">
-              <Settings></Settings>
-            </button>
-            <button className="px-2 py-2 rounded-full bg-yellow-500 hover:bg-gray-600 transition cursor-target">
+            <button className="px-2 py-2 rounded-full bg-yellow-500 hover:bg-gray-600 transition cursor-target" onClick={() =>setOpen(true)}>
               <Download></Download>
             </button>
+            
           </div>
         </div>
       </div>
+      <TutlaWindow open={open} onClose={() => setOpen(false)} title="Mod Downloader">
+          <DownloaderLayout>
+          </DownloaderLayout>
+      </TutlaWindow>
+
+      
     </div>
   )
 }

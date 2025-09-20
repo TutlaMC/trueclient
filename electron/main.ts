@@ -44,6 +44,7 @@ const launcher = new Client();
 
 ipcMain.on("launch-minecraft", async (_event, playerName: string) => {
   console.log(playerName)
+  mainWindow?.webContents.send("message", { text: "launching..." });
   try {
     const opts = {
       authorization: Authenticator.getAuth(playerName || "Player"),
@@ -61,9 +62,9 @@ ipcMain.on("launch-minecraft", async (_event, playerName: string) => {
 
     launcher.launch(opts);
 
-    //launcher.on("debug", (e) => console.log("[DEBUG]", e));
-    //launcher.on("data", (e) => console.log("[DATA]", e.toString()));
-    //launcher.on("progress", (e) => console.log("[PROGRESS]", e));
+    launcher.on("debug", (e) => console.log("[DEBUG]", e));
+    launcher.on("data", (e) => console.log("[DATA]", e.toString()));
+    launcher.on("progress", (e) => console.log("[PROGRESS]", e));
     launcher.on("close", (code) => console.log(`Minecraft exited with code ${code}`));
 
   } catch (err) {
