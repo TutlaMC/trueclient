@@ -1,5 +1,3 @@
-import React from "react"
-
 // peak joblessness
 // - didnt make it tho (chatgpt eh)
 // got to the point where my edits look like either chatgpt has my style or i have chatgpt's style

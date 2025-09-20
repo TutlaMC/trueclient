@@ -15,7 +15,7 @@ export default function DownloaderLayout() {
   const [modDescription, setmodDesc] = useState("");
 
 
-  const [selectedMod, setSelectedMod] = useState<JSON | null>(null);
+  const [selectedMod, setSelectedMod] = useState<any | null>(null);
 
   async function search(query: string) {
     try {
