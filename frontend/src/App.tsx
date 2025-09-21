@@ -5,6 +5,7 @@ import { Play, Settings, Download, StopCircle} from "lucide-react";
 import TutlaWindow from "./components/TutlaWindow";
 import DownloaderLayout from "./components/DownloadMenu/DownloaderLayout";
 import LiquidGlassDropdown from "./components/LiquidGlass/LiquidGlassDropDown";
+import { notify } from "./components/LiquidGlass/Notification";
 
 const State = {
   IDLE: 0,
@@ -36,7 +37,7 @@ export default function App() {
   const launchGame = async () => {
     setStatus(State.LAUNCHING)
     const result = window.electronAPI.launchMinecraft("weeb")
-    console.log(result)
+    notify({message:"Launching Minecraft"})
   }
 
   const stopGame = () => {
