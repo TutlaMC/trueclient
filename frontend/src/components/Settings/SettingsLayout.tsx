@@ -83,10 +83,10 @@ export default function SettingsLayout({ config, setConfig }: SettingsLayoutProp
                     case "JVM": 
                         return <>
                             <Setting label="Minimum RAM">
-                                <input type="range" min={1} max={128}  onChange={(e) => setMinRam(Number(e.target.value))}></input><p>{minRam}</p>
+                                <input type="range" min={1} max={64}  onChange={(e) => setMinRam(Number(e.target.value))}></input><p>{minRam}</p>
                             </Setting>
                             <Setting label="Maximum RAM">
-                                <input type="range" min={minRam} max={128} onChange={(e) => setMaxRam(Number(e.target.value))}></input><span>{maxRam}</span>
+                                <input type="range" min={minRam} max={64} onChange={(e) => setMaxRam(Number(e.target.value))}></input><span>{maxRam}</span>
                             </Setting>
                         </>
                     default:
