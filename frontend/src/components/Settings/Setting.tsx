@@ -1,5 +1,4 @@
 import type React from "react";
-import LiquidGlass from "../LiquidGlass/LiquidGlass";
 
 type SettingProps = {
     label: string,
@@ -8,12 +7,14 @@ type SettingProps = {
 
 export default function Setting({ label, children }: SettingProps) {
   return (
-    <LiquidGlass>
-        <div className="flex flex-col space-y-2 w-full">
+    <div>
+        <div className="flex items-center justify-between w-full mb-2">
             <span>{label}</span>
-            {children}
+            <div className="flex space-x-2">
+              {children}
+            </div>
         </div>
-    </LiquidGlass>
+    </div>
     
   );
 }

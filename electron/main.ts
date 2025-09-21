@@ -58,7 +58,9 @@ const default_conf =
   "minecraft_version": "1.21.4",
   "type": "release",
   "fabric_loader": "0.16.7",
-  "fabric_installer": "1.0.1"
+  "fabric_installer": "1.0.1",
+  "minRam":4,
+  "maxRam": 8
 }
 
 let client_config: any = JSON.parse(
@@ -138,7 +140,7 @@ ipcMain.on("launch-minecraft", (_event, playerName: string) => {
       loader: client_config.fabric_loader || default_conf.fabric_loader,
       installer: client_config.fabric_installer || default_conf.fabric_installer
     },
-    memory: { min: "2G", max: "4G" }
+    memory: { min: `${client_config.minRam}G`, max: `${client_config.maxRam}G` }
   };
 
   // setup promise for spawn
@@ -170,8 +172,9 @@ ipcMain.on("stop-minecraft", async () => {
 
 
 ipcMain.on("bconfig", async (_event, config: any | null = null) => {
+  console.log(config)
   if (config){
-    fs.writeFileSync(CONFIG_FILE, config);
+    fs.writeFileSync(CONFIG_FILE, JSON.stringify(config, null, 4));
   } else {
     config = betterReadONG(CONF_FILE_NAME)
   }

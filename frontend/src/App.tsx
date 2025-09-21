@@ -101,12 +101,11 @@ export default function App() {
       <TutlaWindow open={openSettings} onClose={() => setOpenSettings(false)} title="Settings">
          <SettingsLayout config={config} setConfig={(newConfig: any) => {
             setConfig(newConfig);
+            console.log(newConfig)
             window.electronAPI.bconfig(newConfig); 
           }}>
           </SettingsLayout> 
-      </TutlaWindow>
-
-      
+      </TutlaWindow>    
     </div>
   )
 }
