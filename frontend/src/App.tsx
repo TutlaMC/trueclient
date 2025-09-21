@@ -4,6 +4,7 @@ import Prism from './components/Background';
 import { Play, Settings, Download, StopCircle} from "lucide-react";
 import TutlaWindow from "./components/TutlaWindow";
 import DownloaderLayout from "./components/DownloadMenu/DownloaderLayout";
+import LiquidGlassDropdown from "./components/LiquidGlass/LiquidGlassDropDown";
 
 const State = {
   IDLE: 0,
@@ -31,8 +32,6 @@ export default function App() {
     });
     window.electronAPI.bconfig();
   }, []);
-
-  console.log(config, "eeeeeeeeeeeeeeeeeeeeeeeeeeee\n\n\n")
 
   const launchGame = async () => {
     setStatus(State.LAUNCHING)

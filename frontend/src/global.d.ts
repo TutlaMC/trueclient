@@ -8,6 +8,7 @@ declare global {
       bconfig: (config: any | null = null) => void;
       onConfig: (callback: (data: any) => void) => void;
       stopMinecraft: () => void
+      downloadMod: (link: string) => void 
     };
   }
 }

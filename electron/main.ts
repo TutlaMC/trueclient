@@ -4,6 +4,7 @@ import * as path from "path";
 import LauncherCore from "minecraft-launcher-core";
 const { Client, Authenticator } = LauncherCore;
 import fs from 'fs';
+import https from 'https';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -32,11 +33,28 @@ function betterReadONG(filePath: string, defaultContent = ''): string {
   return fs.readFileSync(filePath, 'utf-8');
 }
 
+function downloadFile(url: string, outputPath: string) {
+  const file = fs.createWriteStream(outputPath);
+  https.get(url, (res) => {
+    res.pipe(file);
+    file.on("finish", () => {
+      file.close();
+    });
+  }).on("error", (err) => {
+    fs.unlinkSync(outputPath);
+    console.error("Download error:", err.message);
+  });
+}
+
+
+
 // init shi
 
 ensureAppDir("")
+const MODS_DIR = ensureAppDir("mods");
 const default_conf = 
 {
+  "player": "TrueClientOnTop",
   "minecraft_version": "1.21.4",
   "type": "release",
   "fabric_loader": "0.16.7",
@@ -48,9 +66,6 @@ let client_config: any = JSON.parse(
 );
 
 // now shi
-
-
-
 
 let mainWindow: BrowserWindow | null
 
@@ -86,38 +101,73 @@ app.on("activate", () => {
 
 const launcher = new Client();
 
-ipcMain.on("launch-minecraft", async (_event, playerName: string) => {
-  console.log(playerName);
-  mainWindow?.webContents.send("message", { text: "launching..." });
+const minecraftWrapper = {
+  process: null as any,
+  spawned: null as Promise<void> | null,
+  spawnedResolve: null as (() => void) | null
+};
 
-  try {
-    const opts = {
-      authorization: Authenticator.getAuth(playerName || "Player"),
-      root: MINECRAFT_DIR,
-      version: {
-        number: client_config.minecraft_version || default_conf.minecraft_version,
-        type: client_config.type || default_conf.type,
-      },
-      fabric: {
-        loader: client_config.fabric_loader || default_conf.fabric_loader,
-        installer: client_config.fabric_installer || default_conf.fabric_installer
-      },
-      memory: { min: "2G", max: "4G" }
-    };
+// listen once for the spawn event
+launcher.on("spawn", (childProcess) => {
+  minecraftWrapper.process = childProcess;
 
-    launcher.launch(opts);
+  childProcess.on("close", (code: number) => {
+    console.log(`Minecraft exited with code ${code}`);
+    minecraftWrapper.process = null;
+  });
 
-    launcher.on("debug", (e) => console.log("[DEBUG]", e));
-    launcher.on("data", (e) => console.log("[DATA]", e.toString()));
-    launcher.on("progress", (e) => console.log("[PROGRESS]", e));
-  } catch (err) {
-    console.error("Launch failed:", err);
+  if (minecraftWrapper.spawnedResolve) {
+    minecraftWrapper.spawnedResolve();
+    minecraftWrapper.spawned = null;
+    minecraftWrapper.spawnedResolve = null;
   }
 });
 
-ipcMain.on("stop-minecraft", () => {
-  
+ipcMain.on("launch-minecraft", (_event, playerName: string) => {
+  console.log(playerName);
+  mainWindow?.webContents.send("message", { text: "launching..." });
+
+  const opts = {
+    authorization: Authenticator.getAuth(playerName || default_conf.player),
+    root: MINECRAFT_DIR,
+    version: {
+      number: client_config.minecraft_version || default_conf.minecraft_version,
+      type: client_config.type || default_conf.type,
+    },
+    fabric: {
+      loader: client_config.fabric_loader || default_conf.fabric_loader,
+      installer: client_config.fabric_installer || default_conf.fabric_installer
+    },
+    memory: { min: "2G", max: "4G" }
+  };
+
+  // setup promise for spawn
+  minecraftWrapper.spawned = new Promise((resolve) => {
+    minecraftWrapper.spawnedResolve = resolve;
+  });
+
+  launcher.launch(opts);
+
+  launcher.on("debug", (e) => console.log("[DEBUG]", e));
+  launcher.on("data", (e) => console.log("[DATA]", e.toString()));
+  launcher.on("progress", (e) => console.log("[PROGRESS]", e));
 });
+
+ipcMain.on("stop-minecraft", async () => {
+  if (!minecraftWrapper.process && minecraftWrapper.spawned) {
+    console.log("Waiting for Minecraft to spawn...");
+    await minecraftWrapper.spawned;
+  }
+
+  if (minecraftWrapper.process) {
+    minecraftWrapper.process.kill();
+    console.log("Minecraft session ended.");
+    minecraftWrapper.process = null;
+  } else {
+    console.log("No Minecraft process running.");
+  }
+});
+
 
 ipcMain.on("bconfig", async (_event, config: any | null = null) => {
   if (config){
@@ -129,3 +179,9 @@ ipcMain.on("bconfig", async (_event, config: any | null = null) => {
   mainWindow?.webContents.send("config", { config: config });
 });
 
+ipcMain.on("downloadMod", async (_event, link: string) => {
+  const match = link.match(/[^\\/]+\.jar\b/);
+  const filename = match ? match[0] : "mod.jar";
+  const filePath = path.join(MODS_DIR, filename);
+  downloadFile(link, filePath);
+});
