@@ -50,11 +50,11 @@
       ],
       "category": "Game",
       "maintainer": "TutlaMC ayaanibrahim1110@gmail.com",
-      "icon": "build/icons"
+      "icon": "build/icon.png"
     },
     "win": {
       "target": "nsis",
-      "icon": "build/icon.ico"
+      "icon": "build/icon.png"
     }
   }
 }
