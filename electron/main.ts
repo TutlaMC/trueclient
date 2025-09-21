@@ -125,7 +125,7 @@ launcher.on("spawn", (childProcess) => {
 
 ipcMain.on("launch-minecraft", (_event, playerName: string) => {
   console.log(playerName);
-  mainWindow?.webContents.send("message", { text: "launching..." });
+  mainWindow?.webContents.send("message", { text: "Launching Minecraft..." });
 
   const opts = {
     authorization: Authenticator.getAuth(playerName || default_conf.player),

@@ -5,6 +5,7 @@ import { Play, Settings, Download, StopCircle} from "lucide-react";
 import TutlaWindow from "./components/TutlaWindow";
 import DownloaderLayout from "./components/DownloadMenu/DownloaderLayout";
 import { notify } from "./components/LiquidGlass/Notification";
+import SettingsLayout from "./components/Settings/SettingsLayout";
 
 const State = {
   IDLE: 0,
@@ -19,13 +20,13 @@ export default function App() {
   const [config, setConfig] = useState<any>({});
 
   const [status, setStatus] = useState<State>(State.IDLE);
-  const [msg, setMsg] = useState("");
 
-  const [open, setOpen] = useState(false)
+  const [openSettings, setOpenSettings] = useState(false)
+  const [openModDownloader, setOpenModDownloader] = useState(false)
 
   useEffect(() => {
     window.electronAPI.onMessage((data) => {
-      setMsg(data.text);
+      notify({message:data.text})
     });
     window.electronAPI.onConfig((data) => {
       setConfig(JSON.parse(data.config));
@@ -36,7 +37,6 @@ export default function App() {
   const launchGame = async () => {
     setStatus(State.LAUNCHING)
     window.electronAPI.launchMinecraft("weeb")
-    notify({message:"Launching Minecraft"})
   }
 
   const stopGame = () => {
@@ -70,11 +70,11 @@ export default function App() {
       <div className="w-screen relative flex items-center justify-center h-full text-white">
         <div className="w-full max-w-md p-6 rounded shadow-xl bg-black/50">
           <h1 className="text-3xl font-bold text-center mb-4 text-emerald-400">
-            TrueClient {msg}
+            TrueClient
           </h1>
           <div className="flex flex-row items-center justify-center gap-3">
             
-            <button className="px-2 py-2 rounded-full bg-gray-700 hover:bg-gray-600 transition cursor-target">
+            <button onClick={() => setOpenSettings(true)} className="px-2 py-2 rounded-full bg-gray-700 hover:bg-gray-600 transition cursor-target">
               <Settings></Settings>
             </button>
             {
@@ -86,16 +86,24 @@ export default function App() {
                 <StopCircle></StopCircle>
               </button> 
             }
-            <button className="px-2 py-2 rounded-full bg-yellow-500 hover:bg-gray-600 transition cursor-target" onClick={() =>setOpen(true)}>
+            <button className="px-2 py-2 rounded-full bg-yellow-500 hover:bg-gray-600 transition cursor-target" onClick={() =>setOpenModDownloader(true)}>
               <Download></Download>
             </button>
             
           </div>
         </div>
       </div>
-      <TutlaWindow open={open} onClose={() => setOpen(false)} title="Mod Downloader">
+      <TutlaWindow open={openModDownloader} onClose={() => setOpenModDownloader(false)} title="Mod Downloader">
           <DownloaderLayout config={config}>
           </DownloaderLayout>
+      </TutlaWindow>
+
+      <TutlaWindow open={openSettings} onClose={() => setOpenSettings(false)} title="Settings">
+         <SettingsLayout config={config} setConfig={(newConfig: any) => {
+            setConfig(newConfig);
+            window.electronAPI.bconfig(newConfig); 
+          }}>
+          </SettingsLayout> 
       </TutlaWindow>
 
       
