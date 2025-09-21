@@ -4,7 +4,6 @@ import Prism from './components/Background';
 import { Play, Settings, Download, StopCircle} from "lucide-react";
 import TutlaWindow from "./components/TutlaWindow";
 import DownloaderLayout from "./components/DownloadMenu/DownloaderLayout";
-import LiquidGlassDropdown from "./components/LiquidGlass/LiquidGlassDropDown";
 import { notify } from "./components/LiquidGlass/Notification";
 
 const State = {
@@ -36,7 +35,7 @@ export default function App() {
 
   const launchGame = async () => {
     setStatus(State.LAUNCHING)
-    const result = window.electronAPI.launchMinecraft("weeb")
+    window.electronAPI.launchMinecraft("weeb")
     notify({message:"Launching Minecraft"})
   }
 

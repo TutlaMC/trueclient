@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import LiquidGlassButton from "../LiquidGlass/LiquidGlassButton";
 import TutlaWindow from "../TutlaWindow";
 import MarkdownReader from "../MarkdownReader";
