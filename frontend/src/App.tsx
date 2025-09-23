@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react"
 import TargetCursor from "./components/TargetCursor"
 import Prism from './components/Background';
-import { Play, Settings, Download, StopCircle} from "lucide-react";
+import { Play, Settings, Download, StopCircle, LogsIcon} from "lucide-react";
 import TutlaWindow from "./components/TutlaWindow";
 import DownloaderLayout from "./components/DownloadMenu/DownloaderLayout";
 import { notify } from "./components/LiquidGlass/Notification";
 import SettingsLayout from "./components/Settings/SettingsLayout";
+import Logs from "./components/Logs";
 
 const State = {
   IDLE: 0,
@@ -18,31 +19,38 @@ type State = typeof State[keyof typeof State];
 
 export default function App() {
   const [config, setConfig] = useState<any>({});
+  const [logs, setLogs] = useState("No Minecraft Session")
 
   const [status, setStatus] = useState<State>(State.IDLE);
 
-  const [openSettings, setOpenSettings] = useState(false)
-  const [openModDownloader, setOpenModDownloader] = useState(false)
+  const [openSettings, setOpenSettings] = useState(false);
+  const [openModDownloader, setOpenModDownloader] = useState(false);
+  const [openLogs, setOpenLogs] = useState(false);
 
   useEffect(() => {
-    window.electronAPI.onMessage((data) => {
-      notify({message:data.text})
-    });
-    window.electronAPI.onConfig((data) => {
-      setConfig(JSON.parse(data.config));
-    });
+    if ((window as any)._listenersAdded) return;
+    (window as any)._listenersAdded = true;
+
+    window.electronAPI.onMessage((data) => notify({ message: data.text }));
+    window.electronAPI.onConfig((data) => setConfig(JSON.parse(data.config)));
+    window.electronAPI.sendLog((wlogs) => setLogs(prev => prev + "\n" + wlogs.text));
+
     window.electronAPI.bconfig();
   }, []);
 
+
+
   const launchGame = async () => {
     setStatus(State.LAUNCHING)
-    window.electronAPI.launchMinecraft("weeb")
+    window.electronAPI.launchMinecraft(config.player)
   }
 
   const stopGame = () => {
     setStatus(State.IDLE)
     window.electronAPI.stopMinecraft()
+    setLogs("No Minecraft Session")
   }
+  
 
 
   return (
@@ -68,8 +76,8 @@ export default function App() {
         
       </div>
       <div className="w-screen relative flex items-center justify-center h-full text-white">
-        <div className="w-full max-w-md p-6 rounded shadow-xl bg-black/50">
-          <h1 className="text-3xl font-bold text-center mb-4 text-emerald-400">
+        <div className="w-full max-w-md p-6 rounded shadow-xl bg-black/50 space-y-2">
+          <h1 className="text-3xl font-bold text-center mb-2 text-emerald-400">
             TrueClient
           </h1>
           <div className="flex flex-row items-center justify-center gap-3">
@@ -88,8 +96,12 @@ export default function App() {
             }
             <button className="px-2 py-2 rounded-full bg-yellow-500 hover:bg-gray-600 transition cursor-target" onClick={() =>setOpenModDownloader(true)}>
               <Download></Download>
+            </button>            
+          </div>
+          <div className="flex flex-row items-center justify-center gap-3">
+            <button className="px-2 py-2 rounded-full bg-black/50 border-white hover:bg-gray-600 transition cursor-target" onClick={() =>setOpenLogs(true)}>
+              <LogsIcon></LogsIcon>
             </button>
-            
           </div>
         </div>
       </div>
@@ -105,7 +117,10 @@ export default function App() {
             window.electronAPI.bconfig(newConfig); 
           }}>
           </SettingsLayout> 
-      </TutlaWindow>    
+      </TutlaWindow>
+      <TutlaWindow open={openLogs} onClose={() => setOpenLogs(false)} title="Logs">
+          <Logs logs={logs} setLogs={setLogs}></Logs>
+      </TutlaWindow> 
     </div>
   )
 }

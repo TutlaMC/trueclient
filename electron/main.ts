@@ -126,7 +126,6 @@ launcher.on("spawn", (childProcess) => {
 });
 
 ipcMain.on("launch-minecraft", (_event, playerName: string) => {
-  console.log(playerName);
   mainWindow?.webContents.send("message", { text: "Launching Minecraft..." });
 
   const opts = {
@@ -150,29 +149,17 @@ ipcMain.on("launch-minecraft", (_event, playerName: string) => {
 
   launcher.launch(opts);
 
-  launcher.on("debug", (e) => console.log("[DEBUG]", e));
-  launcher.on("data", (e) => console.log("[DATA]", e.toString()));
-  launcher.on("progress", (e) => console.log("[PROGRESS]", e));
+  launcher.on("debug", (e) => mainWindow?.webContents.send("sendLog", { text: "[DEBUG] "+e }));
+  launcher.on("data", (e) => mainWindow?.webContents.send("sendLog", { text: e }));
+  launcher.on("progress", (e) => {mainWindow?.webContents.send("sendLog", { text: "[PROGRESS] "+`Task ${e.task}/${e.total} of ${e.type}` });});
 });
 
 ipcMain.on("stop-minecraft", async () => {
-  if (!minecraftWrapper.process && minecraftWrapper.spawned) {
-    console.log("Waiting for Minecraft to spawn...");
-    await minecraftWrapper.spawned;
-  }
-
-  if (minecraftWrapper.process) {
-    minecraftWrapper.process.kill();
-    console.log("Minecraft session ended.");
-    minecraftWrapper.process = null;
-  } else {
-    console.log("No Minecraft process running.");
-  }
+  
 });
 
 
 ipcMain.on("bconfig", async (_event, config: any | null = null) => {
-  console.log(config)
   if (config){
     fs.writeFileSync(CONFIG_FILE, JSON.stringify(config, null, 4));
   } else {

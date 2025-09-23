@@ -11,4 +11,7 @@ contextBridge.exposeInMainWorld("electronAPI", {
   },
   stopMinecraft: ()  => ipcRenderer.send("stop-minecraft"),
   downloadMod: (link: string) => ipcRenderer.send("downloadMod", link),
+  sendLog: (callback: (logs: any) => void) => {
+    ipcRenderer.on("sendLog", (_event, logs) => callback(logs));
+  }, 
 });

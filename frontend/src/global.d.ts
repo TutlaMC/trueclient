@@ -9,6 +9,7 @@ declare global {
       onConfig: (callback: (data: any) => void) => void;
       stopMinecraft: () => void
       downloadMod: (link: string) => void 
+      sendLog: (callback: (data: any) => void) => void;
     };
   }
 }
