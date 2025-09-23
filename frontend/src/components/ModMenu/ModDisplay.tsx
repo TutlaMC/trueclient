@@ -19,12 +19,8 @@ export default function ModDisplay({selectedMod, setShowDesc, setShowDownloadVer
                 <LiquidGlassButton className="flex  bg-opacity-25 bg-green-500" onClick={() => setShowDownloadVersionSelector(true)}><DownloadCloudIcon> </DownloadCloudIcon></LiquidGlassButton>
                 <LiquidGlassButton className="flex" onClick={() => setShowDesc(true)}><BookAudio></BookAudio></LiquidGlassButton>
               </div>
-              
               <p dangerouslySetInnerHTML={{__html: selectedMod.description}}></p>
-              
             </div>
-            
-            
         }
       </LiquidGlass>
     )

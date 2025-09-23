@@ -10,6 +10,8 @@ declare global {
       stopMinecraft: () => void
       downloadMod: (link: string) => void 
       sendLog: (callback: (data: any) => void) => void;
+      getMods: () => void 
+      recieveMods: (callback: (mods: any) => void) => void;
     };
   }
 }

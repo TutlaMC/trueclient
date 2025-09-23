@@ -21,6 +21,7 @@ type State = typeof State[keyof typeof State];
 export default function App() {
   const [config, setConfig] = useState<any>({});
   const [logs, setLogs] = useState("No Minecraft Session")
+  const [modsList, setModsList] = useState([])
 
   const [status, setStatus] = useState<State>(State.IDLE);
 
@@ -35,8 +36,11 @@ export default function App() {
     window.electronAPI.onMessage((data) => notify({ message: data.text }));
     window.electronAPI.onConfig((data) => setConfig(JSON.parse(data.config)));
     window.electronAPI.sendLog((wlogs) => setLogs(prev => prev + "\n" + wlogs.text));
+    window.electronAPI.recieveMods((mods) => setModsList(mods))
 
     window.electronAPI.bconfig();
+    window.electronAPI.getMods();
+    console.log(modsList)
   }, []);
 
 
@@ -106,7 +110,7 @@ export default function App() {
           </div>
         </div>
       </div>
-      
+
       <TutlaWindow open={openModDownloader} onClose={() => setOpenModDownloader(false)} title="Mod Downloader">
           <ModMenuLayout config={config}>
           </ModMenuLayout>

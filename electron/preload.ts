@@ -14,4 +14,8 @@ contextBridge.exposeInMainWorld("electronAPI", {
   sendLog: (callback: (logs: any) => void) => {
     ipcRenderer.on("sendLog", (_event, logs) => callback(logs));
   }, 
+  getMods: () => ipcRenderer.send("getMods"),
+  recieveMods: (callback: (mods: any) => void) => {
+    ipcRenderer.on("recieveMods", (_event, mods) => callback(mods));
+  }, 
 });

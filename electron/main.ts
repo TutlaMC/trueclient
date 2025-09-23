@@ -142,11 +142,6 @@ ipcMain.on("launch-minecraft", (_event, playerName: string) => {
     memory: { min: `${client_config.minRam}G`, max: `${client_config.maxRam}G` }
   };
 
-  // setup promise for spawn
-  minecraftWrapper.spawned = new Promise((resolve) => {
-    minecraftWrapper.spawnedResolve = resolve;
-  });
-
   launcher.launch(opts);
 
   launcher.on("debug", (e) => mainWindow?.webContents.send("sendLog", { text: "[DEBUG] "+e }));
@@ -157,7 +152,6 @@ ipcMain.on("launch-minecraft", (_event, playerName: string) => {
 ipcMain.on("stop-minecraft", async () => {
   
 });
-
 
 ipcMain.on("bconfig", async (_event, config: any | null = null) => {
   if (config){
@@ -175,3 +169,8 @@ ipcMain.on("downloadMod", async (_event, link: string) => {
   const filePath = path.join(MODS_DIR, filename);
   downloadFile(link, filePath);
 });
+
+ipcMain.on("getMods", (_event) => {
+  const files = fs.readdirSync(MODS_DIR)
+  mainWindow?.webContents.send("recieveMods", { mods: files});
+})
