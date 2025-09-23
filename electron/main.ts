@@ -61,7 +61,10 @@ const default_conf =
   "fabric_loader": "0.16.7",
   "fabric_installer": "1.0.1",
   "minRam":4,
-  "maxRam": 8
+  "maxRam": 8,
+
+  "launcher_background": true,
+  "launcher_cursor": true,
 }
 
 let client_config: any = JSON.parse(

@@ -60,10 +60,13 @@ export default function App() {
 
   return (
     <div className="h-screen w-screen flex items-center justify-center bg-black text-white">
+      {config.launcher_cursor ?
       <TargetCursor 
         spinDuration={2}
         hideDefaultCursor={true}
-      />
+      /> : null}
+      
+      {config.launcher_background ?
       <div style={{ width: '100%', height: '100%', position: 'fixed' }}>
         <Prism
           animationType="rotate"
@@ -76,10 +79,7 @@ export default function App() {
           noise={0}
           glow={1}
         />
-
-        
-        
-      </div>
+      </div> : null}
       <div className="w-screen relative flex items-center justify-center h-full text-white">
         <div className="w-full max-w-md p-6 rounded shadow-xl bg-black/50 space-y-2">
           <h1 className="text-3xl font-bold text-center mb-2 text-emerald-400">

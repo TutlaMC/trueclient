@@ -6,6 +6,7 @@ import LiquidGlassInput from "../LiquidGlass/LiquidGlassInput";
 import { User } from "lucide-react";
 import LiquidGlassDropdown from "../LiquidGlass/LiquidGlassDropDown";
 import { notify } from "../LiquidGlass/Notification";
+import LiquidGlassCheckbox from "../LiquidGlass/LiquidGlassCheckbox";
 
 type SettingsLayoutProps = {
     config: any;
@@ -13,7 +14,7 @@ type SettingsLayoutProps = {
 }
 
 export default function SettingsLayout({ config, setConfig }: SettingsLayoutProps) {
-  const categories = ["General", "Minecraft", "JVM"]
+  const categories = ["General", "Minecraft","Launcher", "JVM"]
   const [currentCategory, setCurrentCategory] = useState("General");
 
   const [mcVersions, setMcVersions] = useState<{ [key: string]: string }>({
@@ -67,6 +68,8 @@ export default function SettingsLayout({ config, setConfig }: SettingsLayoutProp
   const [fabricLoaderVersion, setFabricLoaderVersion] = useState<string>(config.fabric_loader);
   const [minRam, setMinRam] = useState(config.minRam);
   const [maxRam, setMaxRam] = useState(config.maxRam)
+  const [enableLauncherBackground, setEnableLauncherBackground] = useState<boolean>(config.launcher_background)
+  const [enableLauncherCursor, setEnableLauncherCursor] = useState<boolean>(config.launcher_cursor)
   return (
     <div className="flex space-x-2">
         <LiquidGlass className="w-[33%] p-[1vw]">
@@ -87,6 +90,22 @@ export default function SettingsLayout({ config, setConfig }: SettingsLayoutProp
                             </Setting>
                             <Setting label="Maximum RAM">
                                 <input type="range" min={minRam} max={64} onChange={(e) => setMaxRam(Number(e.target.value))}></input><span>{maxRam}</span>
+                            </Setting>
+                        </>
+                    case "Launcher":
+                        return <>
+                            <Setting label="Enable Animated Background">
+                                <LiquidGlassCheckbox
+                                    checked={enableLauncherBackground}
+                                    onChange={(e) => setEnableLauncherBackground(e.target.checked)}
+                                />
+                            </Setting>
+
+                            <Setting label="Enable Target Cursor">
+                                <LiquidGlassCheckbox
+                                    checked={enableLauncherCursor}
+                                    onChange={(e) => setEnableLauncherCursor(e.target.checked)}
+                                />
                             </Setting>
                         </>
                     default:
@@ -132,7 +151,7 @@ export default function SettingsLayout({ config, setConfig }: SettingsLayoutProp
 
             <LiquidGlassButton
                 className="px-2 py-1 bg-emerald-500 rounded"
-                onClick={() => setConfig({ ...config, player: playerName, minecraft_version: minecraftVersion, minRam: minRam, maxRam: maxRam })}
+                onClick={() => setConfig({ ...config, player: playerName, minecraft_version: minecraftVersion, minRam: minRam, maxRam: maxRam, launcher_background: enableLauncherBackground, launcher_cursor: enableLauncherCursor })}
             >
                 Update Config
             </LiquidGlassButton>  
