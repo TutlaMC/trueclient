@@ -16,8 +16,7 @@ export default function TutlaWindow({ open, onClose, title, children, className=
   
   return (
     <div className={`fixed inset-0 z-${zindex} flex items-center justify-center bg-black/40 backdrop-blur-sm ${className} `} >
-      
-      <LiquidGlass className={`w-[90%]`}>
+      <LiquidGlass className="w-[90%]">
         <button
           onClick={onClose}
           className="absolute top-3 right-3 p-2 rounded-full bg-white/20 hover:bg-white/30 transition cursor-target"
@@ -25,9 +24,14 @@ export default function TutlaWindow({ open, onClose, title, children, className=
           <X size={18} className="text-white" />
         </button>
 
-        {title && <h2 className="text-lg font-semibold text-white mb-4">{title}</h2>}
-
-        <div className="target w-full">{children}</div>
+        {title && (
+          <h2 className="text-lg font-semibold text-white mb-4">
+            {title}
+          </h2>
+        )}
+        <div>
+          {children}
+        </div>
       </LiquidGlass>
     </div>
   )

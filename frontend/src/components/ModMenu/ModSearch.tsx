@@ -55,14 +55,14 @@ export default function ModSearch({setMods, mods,    getModFromModrinth}:ModSear
     search("spoofer");
   }, []);
   return (
-      <LiquidGlass className="w-[75%]"> 
+      <LiquidGlass className=" w-[90%] max-h-[80%] relative flex flex-col"> 
         <LiquidGlassInput
           placeholder="spoofer"
           value={searchQuery}
           onChange={(e) => setQuery(e.target.value)}
           onKeyDown={handleKeyDown}
         />
-        <div className="flex-1 space-y-2 max-h-[70vh] overflow-y-scroll mt-2">
+        <div className="flex-1 space-y-2 max-h-[50vh] overflow-y-scroll mt-2">
           {mods.map((mod, idx) => (
             <div className="cursor-target" onClick={() => getModFromModrinth(idx)}>
                 <LiquidGlass key={idx} className="p-3" >

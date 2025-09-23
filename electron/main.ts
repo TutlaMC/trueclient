@@ -165,7 +165,7 @@ ipcMain.on("bconfig", async (_event, config: any | null = null) => {
   } else {
     config = betterReadONG(CONF_FILE_NAME)
   }
-
+  console.log(config)
   mainWindow?.webContents.send("config", { config: config });
 });
 

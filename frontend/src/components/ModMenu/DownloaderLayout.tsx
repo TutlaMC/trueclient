@@ -110,7 +110,6 @@ export default function DownloaderLayout({config}: DownloaderLayoutProps) {
             }}>Download</LiquidGlassButton>
         </div>
       </TutlaWindow>
-
     </div>
   );
 }

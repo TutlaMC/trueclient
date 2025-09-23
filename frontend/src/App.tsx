@@ -1,12 +1,13 @@
 import { useState, useEffect } from "react"
 import TargetCursor from "./components/TargetCursor"
 import Prism from './components/Background';
-import { Play, Settings, Download, StopCircle, LogsIcon} from "lucide-react";
+import { Play, Settings, Download, StopCircle, LogsIcon, Library} from "lucide-react";
 import TutlaWindow from "./components/TutlaWindow";
-import DownloaderLayout from "./components/DownloadMenu/DownloaderLayout";
+import DownloaderLayout from "./components/ModMenu/DownloaderLayout";
 import { notify } from "./components/LiquidGlass/Notification";
 import SettingsLayout from "./components/Settings/SettingsLayout";
 import Logs from "./components/Logs";
+import ModMenuLayout from "./components/ModMenu/ModMenuLayout";
 
 const State = {
   IDLE: 0,
@@ -95,7 +96,7 @@ export default function App() {
               </button> 
             }
             <button className="px-2 py-2 rounded-full bg-yellow-500 hover:bg-gray-600 transition cursor-target" onClick={() =>setOpenModDownloader(true)}>
-              <Download></Download>
+              <Library></Library>
             </button>            
           </div>
           <div className="flex flex-row items-center justify-center gap-3">
@@ -105,9 +106,10 @@ export default function App() {
           </div>
         </div>
       </div>
+      
       <TutlaWindow open={openModDownloader} onClose={() => setOpenModDownloader(false)} title="Mod Downloader">
-          <DownloaderLayout config={config}>
-          </DownloaderLayout>
+          <ModMenuLayout config={config}>
+          </ModMenuLayout>
       </TutlaWindow>
 
       <TutlaWindow open={openSettings} onClose={() => setOpenSettings(false)} title="Settings">
