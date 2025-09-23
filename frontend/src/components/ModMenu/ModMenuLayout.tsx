@@ -6,9 +6,10 @@ import ModList from "./ModList";
 
 type ModeMenuLayoutProps = {
     config: any;
+    modsList: any;
 }
 
-export default function ModMenuLayout({config}: ModeMenuLayoutProps) {
+export default function ModMenuLayout({config, modsList}: ModeMenuLayoutProps) {
   const mods = ["Manage", "Download"]
   const [currentPage, setCurrentPage] = useState(mods[0])
   return (
@@ -29,7 +30,7 @@ export default function ModMenuLayout({config}: ModeMenuLayoutProps) {
                             return <DownloaderLayout config={config}></DownloaderLayout>
                     case "Manage":
                         return <>
-                            <ModList>
+                            <ModList mods={modsList}>
                                 
                             </ModList>
                         </>

@@ -7,11 +7,12 @@ declare global {
       onMessage: (callback: (data: any) => void) => void;
       bconfig: (config: any | null = null) => void;
       onConfig: (callback: (data: any) => void) => void;
-      stopMinecraft: () => void
-      downloadMod: (link: string) => void 
+      stopMinecraft: () => void;
+      downloadMod: (link: string) => void;
       sendLog: (callback: (data: any) => void) => void;
-      getMods: () => void 
+      getMods: () => void ;
       recieveMods: (callback: (mods: any) => void) => void;
+      deleteMod: (mod: string) => void;
     };
   }
 }

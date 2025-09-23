@@ -1,9 +1,8 @@
 import { useState, useEffect } from "react"
 import TargetCursor from "./components/TargetCursor"
 import Prism from './components/Background';
-import { Play, Settings, Download, StopCircle, LogsIcon, Library} from "lucide-react";
+import { Play, Settings,  StopCircle, LogsIcon, Library} from "lucide-react";
 import TutlaWindow from "./components/TutlaWindow";
-import DownloaderLayout from "./components/ModMenu/DownloaderLayout";
 import { notify } from "./components/LiquidGlass/Notification";
 import SettingsLayout from "./components/Settings/SettingsLayout";
 import Logs from "./components/Logs";
@@ -29,6 +28,8 @@ export default function App() {
   const [openModDownloader, setOpenModDownloader] = useState(false);
   const [openLogs, setOpenLogs] = useState(false);
 
+
+
   useEffect(() => {
     if ((window as any)._listenersAdded) return;
     (window as any)._listenersAdded = true;
@@ -36,11 +37,10 @@ export default function App() {
     window.electronAPI.onMessage((data) => notify({ message: data.text }));
     window.electronAPI.onConfig((data) => setConfig(JSON.parse(data.config)));
     window.electronAPI.sendLog((wlogs) => setLogs(prev => prev + "\n" + wlogs.text));
-    window.electronAPI.recieveMods((mods) => setModsList(mods))
+    window.electronAPI.recieveMods((mods) => {setModsList(mods.mods)})
 
     window.electronAPI.bconfig();
     window.electronAPI.getMods();
-    console.log(modsList)
   }, []);
 
 
@@ -112,7 +112,7 @@ export default function App() {
       </div>
 
       <TutlaWindow open={openModDownloader} onClose={() => setOpenModDownloader(false)} title="Mod Downloader">
-          <ModMenuLayout config={config}>
+          <ModMenuLayout modsList={modsList} config={config}>
           </ModMenuLayout>
       </TutlaWindow>
 

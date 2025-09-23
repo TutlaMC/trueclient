@@ -17,5 +17,6 @@ contextBridge.exposeInMainWorld("electronAPI", {
   getMods: () => ipcRenderer.send("getMods"),
   recieveMods: (callback: (mods: any) => void) => {
     ipcRenderer.on("recieveMods", (_event, mods) => callback(mods));
-  }, 
+  },
+  deleteMod: (mod: string) => ipcRenderer.send("deleteMod", mod), 
 });

@@ -1,3 +1,4 @@
+import { fabric } from "tomate-loaders";
 import { app, BrowserWindow, ipcMain } from "electron";
 import { fileURLToPath } from "url";
 import * as path from "path";
@@ -125,20 +126,19 @@ launcher.on("spawn", (childProcess) => {
   }
 });
 
-ipcMain.on("launch-minecraft", (_event, playerName: string) => {
+
+
+ipcMain.on("launch-minecraft", async (_event, playerName: string) => {
   mainWindow?.webContents.send("message", { text: "Launching Minecraft..." });
 
+  const launchConfig = await fabric.getMCLCLaunchConfig({
+    gameVersion: client_config.minecraft_version || default_conf.minecraft_version,
+    rootPath: MINECRAFT_DIR,
+  });
+  
   const opts = {
+    ...launchConfig,
     authorization: Authenticator.getAuth(playerName || default_conf.player),
-    root: MINECRAFT_DIR,
-    version: {
-      number: client_config.minecraft_version || default_conf.minecraft_version,
-      type: client_config.type || default_conf.type,
-    },
-    fabric: {
-      loader: client_config.fabric_loader || default_conf.fabric_loader,
-      installer: client_config.fabric_installer || default_conf.fabric_installer
-    },
     memory: { min: `${client_config.minRam}G`, max: `${client_config.maxRam}G` }
   };
 
@@ -173,4 +173,9 @@ ipcMain.on("downloadMod", async (_event, link: string) => {
 ipcMain.on("getMods", (_event) => {
   const files = fs.readdirSync(MODS_DIR)
   mainWindow?.webContents.send("recieveMods", { mods: files});
+})
+
+ipcMain.on("deleteMod", (_event, mod) => {
+  fs.unlinkSync(path.join(MODS_DIR, mod));
+  mainWindow?.webContents.send("message", { text: `Deleted ${mod}`});
 })

@@ -18,18 +18,20 @@
     "build:react": "cd frontend && npm run build && cd .."
   },
   "devDependencies": {
+    "@electron-toolkit/tsconfig": "^2.0.0",
     "@types/node": "^20.19.11",
     "concurrently": "^8.0.0",
     "cross-env": "^10.0.0",
     "electron": "^37.4.0",
     "electron-builder": "^26.0.12",
     "ts-node": "^10.9.2",
-    "typescript": "^5.6.0"
+    "typescript": "^5.9.2"
   },
   "dependencies": {
     "minecraft-launcher-core": "^3.18.2",
     "mkdirp": "^3.0.1",
     "node-fetch": "^3.3.2",
+    "tomate-loaders": "^2.0.2",
     "unzipper": "^0.12.3"
   },
   "build": {
