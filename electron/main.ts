@@ -80,6 +80,8 @@ const createWindow = () => {
       preload: path.join(__dirname, "preload.js"),
     },
   })
+  mainWindow.setMenuBarVisibility(false);
+
 
   if (process.env.NODE_ENV === "dev") {
     mainWindow.loadURL("http://localhost:5173")
