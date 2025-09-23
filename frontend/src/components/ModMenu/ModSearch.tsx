@@ -55,7 +55,7 @@ export default function ModSearch({setMods, mods,    getModFromModrinth}:ModSear
     search("spoofer");
   }, []);
   return (
-      <LiquidGlass className=" w-[90%] max-h-[80%] relative flex flex-col"> 
+      <LiquidGlass className=" w-[90%] h-full relative flex flex-col"> 
         <LiquidGlassInput
           placeholder="spoofer"
           value={searchQuery}
