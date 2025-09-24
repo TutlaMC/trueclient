@@ -22,7 +22,7 @@ Test:
 npm run dev
 ```
  
-Build (Linx/MacOS):
+Build (Linux/MacOS):
 ```bash
 npm run build
 ```
